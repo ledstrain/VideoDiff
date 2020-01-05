@@ -12,18 +12,21 @@ while(True):
     # Save the previous frame
     try:
         old_img = img
+        pb, pg, pr, _ = cv2.split(old_img)    
     except NameError:
        pass
-        
     img = cv2.cvtColor(frame, cv2.COLOR_RGB2RGBA)
-
+    b, g, r, _ = cv2.split(img)
     # Display the resulting frame
-    cv2.imshow('img',img)
+    try:
+        cv2.imshow('diff', b - pb)
+    except NameError:
+        pass
 
     # quit when 'q' is pressed on the image window
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 # When everything done, release the capture
-cap.release()
 cv2.destroyAllWindows()
+cap.release()
