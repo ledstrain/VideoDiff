@@ -1,13 +1,16 @@
 import numpy as np
 import cv2
+from sys import argv
+cap = cv2.VideoCapture(argv[1])
+state = 'b'
 
-cap = cv2.VideoCapture(0)
+def getKeyBind(key):
+    if cv2.waitKey(1) & 0xFF == ord(key):
+        return key
 
-while(True):
+while (cap.isOpened()):
     # Capture frame-by-frame
     ret, frame = cap.read()
-
-    # Our operations on the frame come here
     
     # Save the previous frame
     try:
@@ -15,17 +18,25 @@ while(True):
         pb, pg, pr, _ = cv2.split(old_img)    
     except NameError:
        pass
+
     img = cv2.cvtColor(frame, cv2.COLOR_RGB2RGBA)
     b, g, r, _ = cv2.split(img)
-    # Display the resulting frame
+   
+   # Display the resulting frame
     try:
-        cv2.imshow('diff', b - pb)
+        cv2.imshow('diff {}'.format(state), eval("{} - p{}".format(state, state)))
     except NameError:
         pass
-
+        
     # quit when 'q' is pressed on the image window
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if getKeyBind('q'):
         break
+    if getKeyBind('r'):
+        state = 'r'
+    if getKeyBind('g'):
+        state = 'g'
+    if getKeyBind('b'):
+        state = 'b'
 
 # When everything done, release the capture
 cv2.destroyAllWindows()
