@@ -1,36 +1,56 @@
 import numpy as np
+import argparse
 import cv2
-from skimage.measure import compare_ssim
-cap = cv2.VideoCapture(0)
+state = 'b'
 
-while(True):
+parser = argparse.ArgumentParser(description="Compare frames from a video or capture device")
+group = parser.add_mutually_exclusive_group()
+group.add_argument("--cap", type=int, help="Index value of cv2.VideoCapture device")
+group.add_argument("--file", type=str, help="Path to AVI file to use instead of a video device")
+
+
+args = parser.parse_args()
+
+if args.cap:
+    cap = cv2.VideoCapture(args.cap)
+if args.file:
+    cap = cv2.VideoCapture(args.file)
+
+
+def getKeyBind(key):
+    if cv2.waitKey(1) & 0xFF == ord(key):
+        return key
+
+while (cap.isOpened()):
     # Capture frame-by-frame
     ret, frame = cap.read()
-
-    # Our operations on the frame come here
     
     # Save the previous frame
     try:
         old_img = img
+        pb, pg, pr, _ = cv2.split(old_img)    
     except NameError:
        pass
-        
+
     img = cv2.cvtColor(frame, cv2.COLOR_RGB2RGBA)
+    b, g, r, _ = cv2.split(img)
+   
+   # Display the resulting frame
     try:
-        (score, diff) = compare_ssim(img, old_img, full=True, multichannel=True)
+        cv2.imshow('diff {}'.format(state), eval("{} - p{}".format(state, state)))
     except NameError:
-        print "restart loop"
-        continue
-
-    diff = (diff * 255).astype("uint8")
-
-    # Display the resulting frame
-    cv2.imshow('diff', diff)
-
+        pass
+        
     # quit when 'q' is pressed on the image window
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if getKeyBind('q'):
         break
+    if getKeyBind('r'):
+        state = 'r'
+    if getKeyBind('g'):
+        state = 'g'
+    if getKeyBind('b'):
+        state = 'b'
 
 # When everything done, release the capture
-cap.release()
 cv2.destroyAllWindows()
+cap.release()
