@@ -10,6 +10,7 @@ NDA. Will probably be changed to GPL for public release
 # Requirements
 
 - Python3
+- NumPy
 - OpenCV with Python bindings
 - ffmpeg (need to test how library linking works)
 
