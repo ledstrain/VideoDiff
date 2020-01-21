@@ -32,7 +32,7 @@ while (cap.isOpened()):
     except NameError:
        pass
 
-    img = cv2.cvtColor(frame, cv2.COLOR_RGB2RGBA)
+    img = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
     b, g, r, _ = cv2.split(img)
    
    # Display the resulting frame
