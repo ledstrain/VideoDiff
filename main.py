@@ -27,13 +27,19 @@ while (cap.isOpened()):
     
     # Save the previous frame
     try:
-        old_img = img
-        pb, pg, pr, _ = cv2.split(old_img)    
+        pb = b
+        pg = g
+        pr = r
     except NameError:
        pass
 
     img = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
-    b, g, r, _ = cv2.split(img)
+
+    # Need to validate if this is the proper way to extract subpixel values
+
+    b = img[:,:,0]
+    g = img[:,:,1]
+    r = img[:,:,2]
    
    # Display the resulting frame
     try:
