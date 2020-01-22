@@ -14,10 +14,7 @@ def main():
 
     args = parser.parse_args()
 
-    if args.cap:
-        source = args.cap
-    elif args.file:
-        source = args.file
+    source = args.cap if args.cap else args.file
 
 
     video = VideoDiff(source)
