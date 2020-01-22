@@ -3,6 +3,12 @@ import cv2
 
 class VideoDiff():
     def __init__(self, source):
+        self.colortoindex = {
+            "b": 0,
+            "g": 1,
+            "r": 2,
+        }
+
         self.cap = cv2.VideoCapture(source)
         self.state = 'b'
 
@@ -23,9 +29,7 @@ class VideoDiff():
 
             # Save the previous frame
             try:
-                pb = b
-                pg = g
-                pr = r
+                prevcolor = color
             except NameError:
                 pass
 
@@ -33,13 +37,13 @@ class VideoDiff():
 
             # Need to validate if this is the proper way to extract subpixel values
 
-            b = img[:, :, 0]
-            g = img[:, :, 1]
-            r = img[:, :, 2]
-
+            colorindex = self.colortoindex[self.state]
+            color = img[:, :, colorindex]
             # Display the resulting frame
             try:
-                cv2.imshow('diff {}'.format(self.state), eval("{} - p{}".format(self.state, self.state)))
+                windowname = 'diff {}'.format(self.state)
+                image = color - prevcolor
+                cv2.imshow(windowname, image)
             except NameError:
                 pass
 
