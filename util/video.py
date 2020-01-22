@@ -1,6 +1,4 @@
 import cv2
-import time
-start_time = time.time()
 
 
 class VideoDiff():
@@ -26,10 +24,7 @@ class VideoDiff():
 
     def show(self):
         windowname = 'diff {}'.format(self.state)
-        framecount = 0
         for vimage in self.__render():
-            framecount += 1
-            print(framecount)
             cv2.imshow(windowname, vimage)
 
             # quit when 'q' is pressed on the image window
@@ -62,7 +57,6 @@ class VideoDiff():
                 if prevcolor is not False:
                     prevcolor = color
 
-
                 # Grab color index set by self state and retrieve from frame
                 colorindex = self.colortoindex[self.state]
                 for index in self.colortoindex.values():
@@ -82,4 +76,5 @@ class VideoDiff():
                 yield image
 
             else:
+                # Once video has no more frames
                 break
