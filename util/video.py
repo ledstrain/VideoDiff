@@ -23,29 +23,28 @@ class VideoDiff():
             return key
 
     def render(self):
+        prevcolor = False
         while self.cap.isOpened():
             # Capture frame-by-frame
             ret, frame = self.cap.read()
 
             # Save the previous frame
-            try:
+            if prevcolor is not False:
                 prevcolor = color
-            except NameError:
-                pass
 
             img = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
 
             # Need to validate if this is the proper way to extract subpixel values
-
             colorindex = self.colortoindex[self.state]
             color = img[:, :, colorindex]
+
             # Display the resulting frame
-            try:
+            if prevcolor is not False:
                 windowname = 'diff {}'.format(self.state)
                 image = color - prevcolor
                 cv2.imshow(windowname, image)
-            except NameError:
-                pass
+            else:
+                prevcolor = color
 
             # quit when 'q' is pressed on the image window
             if self.getKeyBind('q'):
