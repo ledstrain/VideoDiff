@@ -62,12 +62,14 @@ class VideoDiff():
                 if prevcolor is not False:
                     prevcolor = color
 
+
                 # Grab color index set by self state and retrieve from frame
                 colorindex = self.colortoindex[self.state]
                 for index in self.colortoindex.values():
                     if index != colorindex:
                         frame[:, :, index] = 0
-                color = frame
+
+                color = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
 
                 # First run, save color as prevcolor and skip
                 # Then compare the two
