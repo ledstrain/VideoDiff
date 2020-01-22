@@ -12,7 +12,7 @@ class VideoDiff():
         }
 
         self.cap = cv2.VideoCapture(source)
-        self.state = 'b'
+        self.state = 'g'
 
     def __del__(self):
         # When everything done, release the capture
@@ -26,7 +26,10 @@ class VideoDiff():
 
     def show(self):
         windowname = 'diff {}'.format(self.state)
+        framecount = 0
         for vimage in self.__render():
+            framecount += 1
+            print(framecount)
             cv2.imshow(windowname, vimage)
 
             # quit when 'q' is pressed on the image window
@@ -40,17 +43,13 @@ class VideoDiff():
                 self.state = 'b'
 
     def save(self, path):
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
         width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        out = cv2.VideoWriter(path, fourcc, 20.0, (height, width))
+        out = cv2.VideoWriter(path, fourcc, 20.0, (width, height))
 
-        framecount = 0
         for vimage in self.__render():
             out.write(vimage)
-            framecount += 1
-            print(framecount)
-        print("done")
         out.release()
 
     def __render(self):
@@ -65,7 +64,10 @@ class VideoDiff():
 
                 # Grab color index set by self state and retrieve from frame
                 colorindex = self.colortoindex[self.state]
-                color = frame[:, :, colorindex]
+                for index in self.colortoindex.values():
+                    if index != colorindex:
+                        frame[:, :, index] = 0
+                color = frame
 
                 # First run, save color as prevcolor and skip
                 # Then compare the two
@@ -76,3 +78,6 @@ class VideoDiff():
                     continue
 
                 yield image
+
+            else:
+                break
