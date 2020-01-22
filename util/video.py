@@ -32,11 +32,10 @@ class VideoDiff():
             if prevcolor is not False:
                 prevcolor = color
 
-            img = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
 
             # Need to validate if this is the proper way to extract subpixel values
             colorindex = self.colortoindex[self.state]
-            color = img[:, :, colorindex]
+            color = frame[:, :, colorindex]
 
             # Display the resulting frame
             if prevcolor is not False:
