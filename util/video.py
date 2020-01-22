@@ -14,7 +14,6 @@ class VideoDiff():
         self.cap = cv2.VideoCapture(source)
         self.state = 'b'
 
-
     def __del__(self):
         # When everything done, release the capture
         cv2.destroyAllWindows()
@@ -29,7 +28,6 @@ class VideoDiff():
         windowname = 'diff {}'.format(self.state)
         for vimage in self.__render():
             cv2.imshow(windowname, vimage)
-            print("--- %s seconds ---" % (time.time() - start_time))
 
             # quit when 'q' is pressed on the image window
             if self.getKeyBind('q'):
@@ -42,14 +40,16 @@ class VideoDiff():
                 self.state = 'b'
 
     def save(self, path):
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
         width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         out = cv2.VideoWriter(path, fourcc, 20.0, (height, width))
 
+        framecount = 0
         for vimage in self.__render():
             out.write(vimage)
-            print("--- %s seconds ---" % (time.time() - start_time))
+            framecount += 1
+            print(framecount)
         print("done")
         out.release()
 
