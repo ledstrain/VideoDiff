@@ -1,7 +1,7 @@
 import cv2
 
 
-class VideoDiff():
+class VideoDiff:
     def __init__(self, source):
         self.colortoindex = {
             "b": 0,
@@ -57,7 +57,8 @@ class VideoDiff():
                 if prevcolor is not False:
                     prevcolor = color
 
-                # Grab color index set by self state and retrieve from frame
+                # Zero out all color indexes not specified
+                # instead of extracting just the index
                 colorindex = self.colortoindex[self.state]
                 for index in self.colortoindex.values():
                     if index != colorindex:
