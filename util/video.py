@@ -39,12 +39,14 @@ class VideoDiff:
 
     def save(self, path):
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        fps = self.cap.get(cv2.CAP_PROP_FPS)
         width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        out = cv2.VideoWriter(path, fourcc, 20.0, (width, height))
+        out = cv2.VideoWriter(path, fourcc, fps, (width, height))
 
+        print(path, fps, width, height)
         for vimage in self.__render():
-            out.write(vimage)
+            framewritten = out.write(vimage)
         out.release()
 
     def __render(self):
