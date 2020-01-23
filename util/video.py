@@ -44,7 +44,6 @@ class VideoDiff:
         height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         out = cv2.VideoWriter(path, fourcc, fps, (width, height))
 
-        print(path, fps, width, height)
         for vimage in self.__render():
             framewritten = out.write(vimage)
         out.release()
@@ -66,7 +65,8 @@ class VideoDiff:
                     if index != colorindex:
                         frame[:, :, index] = 0
 
-                color = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
+                # color = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
+                color = frame
 
                 # First run, save color as prevcolor and skip
                 # Then compare the two
