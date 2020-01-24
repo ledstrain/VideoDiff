@@ -3,13 +3,14 @@ import numpy as np
 
 
 class VideoDiff:
-    def __init__(self, source):
+    def __init__(self, source, fill_value=0):
         self.colortoindex = {
             "b": 0,
             "g": 1,
             "r": 2,
         }
 
+        self.fill_value = fill_value
         self.cap = cv2.VideoCapture(source)
         self.state = 'g'
 
@@ -74,7 +75,7 @@ class VideoDiff:
                 # Fill changed values to 255
                 if prevcolor is not False:
                     imagemask = np.ma.masked_where(color != prevcolor, color)
-                    imagemask.set_fill_value(255)
+                    imagemask.set_fill_value(self.fill_value)
                     image = imagemask.filled()
                 else:
                     prevcolor = color
