@@ -26,18 +26,22 @@ class VideoDiff:
 
     def show(self):
         windowname = 'diff {}'.format(self.state)
-        for vimage in self.__render():
-            cv2.imshow(windowname, vimage)
+        try:
+            for vimage in self.__render():
+                cv2.imshow(windowname, vimage)
 
-            # quit when 'q' is pressed on the image window
-            if self.getKeyBind('q'):
-                break
-            if self.getKeyBind('r'):
-                self.state = 'r'
-            if self.getKeyBind('g'):
-                self.state = 'g'
-            if self.getKeyBind('b'):
-                self.state = 'b'
+                # quit when 'q' is pressed on the image window
+                if self.getKeyBind('q'):
+                    break
+                if self.getKeyBind('r'):
+                    self.state = 'r'
+                if self.getKeyBind('g'):
+                    self.state = 'g'
+                if self.getKeyBind('b'):
+                    self.state = 'b'
+        except KeyboardInterrupt:
+            print("\nExiting")
+            exit(0)
 
     def save(self, path):
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
