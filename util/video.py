@@ -74,9 +74,12 @@ class VideoDiff:
                 color = frame
 
                 # First run, save color as prevcolor and skip
-                # Then compare the two
+                # create mask of image of all changed values
+                # Fill changed values to 255
                 if prevcolor is not False:
-                    image = color - prevcolor
+                    imagemask = np.ma.masked_where(color != prevcolor, color)
+                    imagemask.set_fill_value(255)
+                    image = imagemask.filled()
                 else:
                     prevcolor = color
                     continue
