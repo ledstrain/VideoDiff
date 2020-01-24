@@ -46,10 +46,6 @@ class VideoDiff:
         out = cv2.VideoWriter(path, fourcc, fps, (width, height))
 
         for vimage in self.__render():
-            # If the entire array is full of 0's,
-            # Change all values to 1, to prevent dropping
-            if np.count_nonzero(vimage) == 0:
-                vimage += 1
             out.write(vimage)
         out.release()
 
