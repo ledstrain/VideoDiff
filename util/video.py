@@ -28,7 +28,10 @@ class VideoDiff:
     def show(self):
         try:
             for vimage in self.__render():
-                windowname = 'diff {}'.format(self.state)
+                if self.dither_method == "diff":
+                    windowname = 'Diff {}'.format(self.state.upper())
+                elif self.dither_method == "mask":
+                    windowname = "Masked"
                 cv2.imshow(windowname, vimage)
 
                 # quit when 'q' is pressed on the image window
