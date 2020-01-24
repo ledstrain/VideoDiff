@@ -60,14 +60,15 @@ class VideoDiff:
         out.release()
 
     def __render(self):
-        prevcolor = False
+        prevframe = False
+
         while self.cap.isOpened():
             # Capture frame-by-frame
             ret, frame = self.cap.read()
             if ret is True:
                 # Save the previous frame
-                if prevcolor is not False:
-                    prevcolor = color
+                if prevframe is not False:
+                    prevframe = color
 
                 # Masking allows showing full color
                 # Zero out all color indexes not specified
@@ -81,15 +82,15 @@ class VideoDiff:
                 # color = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
                 color = frame
 
-                # First run, save color as prevcolor and skip
+                # First run, save color as prevframe and skip
                 # create mask of image of all changed values
                 # Fill changed values to 255
-                if prevcolor is not False:
-                    imagemask = np.ma.masked_where(color != prevcolor, color)
+                if prevframe is not False:
+                    imagemask = np.ma.masked_where(frame != prevframe, frame)
                     imagemask.set_fill_value(self.fill_value)
                     image = imagemask.filled()
                 else:
-                    prevcolor = color
+                    prevframe = color
                     continue
 
                 yield image
