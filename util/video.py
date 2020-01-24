@@ -64,12 +64,14 @@ class VideoDiff:
                 if prevcolor is not False:
                     prevcolor = color
 
+                # Masking allows showing full color
                 # Zero out all color indexes not specified
                 # instead of extracting just the index
-                colorindex = self.colortoindex[self.state]
-                for index in self.colortoindex.values():
-                    if index != colorindex:
-                        frame[:, :, index] = 0
+
+                # colorindex = self.colortoindex[self.state]
+                # for index in self.colortoindex.values():
+                #     if index != colorindex:
+                #         frame[:, :, index] = 0
 
                 # color = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
                 color = frame
