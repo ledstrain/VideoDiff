@@ -21,24 +21,29 @@ class VideoDiff:
 
     @staticmethod
     def getKeyBind(key):
-        if cv2.waitKey(1) and 0xFF == ord(key):
+        if cv2.waitKey(1) == ord(key):
             return key
 
     def show(self):
-        windowname = 'diff {}'.format(self.state)
         try:
             for vimage in self.__render():
+                windowname = 'diff {}'.format(self.state)
                 cv2.imshow(windowname, vimage)
 
                 # quit when 'q' is pressed on the image window
                 if self.getKeyBind('q'):
+                    print("q: Quit program")
                     break
                 if self.getKeyBind('r'):
+                    print("r: Switching to red channel")
                     self.state = 'r'
                 if self.getKeyBind('g'):
+                    print("g: Switching to green channel")
                     self.state = 'g'
                 if self.getKeyBind('b'):
+                    print("b: Switching to blue channel")
                     self.state = 'b'
+
         except KeyboardInterrupt:
             print("\nExiting")
             exit(0)
