@@ -17,7 +17,7 @@ def main():
     parser.add_argument(
         "--dither-method",
         "-x",
-        default="subtract",
+        default="diff",
         choices=("mask", "diff"),
         help="Dither detection method")
     group = parser.add_mutually_exclusive_group()
