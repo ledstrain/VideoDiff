@@ -35,13 +35,13 @@ class VideoDiff:
                 if self.getKeyBind('q'):
                     print("q: Quit program")
                     break
-                if self.getKeyBind('r'):
+                if self.getKeyBind('r') and self.state != 'r':
                     print("r: Switching to red channel")
                     self.state = 'r'
-                if self.getKeyBind('g'):
+                if self.getKeyBind('g') and self.state != 'g':
                     print("g: Switching to green channel")
                     self.state = 'g'
-                if self.getKeyBind('b'):
+                if self.getKeyBind('b') and self.state != 'b':
                     print("b: Switching to blue channel")
                     self.state = 'b'
 
