@@ -77,9 +77,8 @@ class VideoDiff:
             return frame_difference
 
         def mask(fframe, fprevframe, fill_value):
-            # Masking allows showing full color
-            # Zero out all color indexes not specified
-            # instead of extracting just the index
+            # Mask frame over old frame
+            # If element is different, change value to fill_value
             imagemask = np.ma.masked_where(fframe != fprevframe, fframe)
             imagemask.set_fill_value(fill_value)
             masked_frame = imagemask.filled()
