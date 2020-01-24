@@ -3,7 +3,7 @@ import numpy as np
 
 
 class VideoDiff:
-    def __init__(self, source, fill_value=0):
+    def __init__(self, source, fill_value=0, dither_method="diff"):
         self.colortoindex = {
             "b": 0,
             "g": 1,
@@ -13,6 +13,7 @@ class VideoDiff:
         self.fill_value = fill_value
         self.cap = cv2.VideoCapture(source)
         self.state = 'g'
+        self.dither_method = dither_method
 
     def __del__(self):
         # When everything done, release the capture
@@ -62,6 +63,22 @@ class VideoDiff:
     def __render(self):
         prevframe = False
 
+        def subtraction(fframe, fprevframe, colortoindex):
+            # Zero out all color indexes not specified
+            # instead of extracting just the index
+            colorindex = colortoindex[self.state]
+            for index in colortoindex.values():
+                if index != colorindex:
+                    frame[:, :, index] = 0
+            frame_difference = fframe - fprevframe
+            return frame_difference
+
+        def mask(fframe, fprevframe, fill_value):
+            imagemask = np.ma.masked_where(fframe != fprevframe, fframe)
+            imagemask.set_fill_value(fill_value)
+            masked_frame = imagemask.filled()
+            return masked_frame
+
         while self.cap.isOpened():
             # Capture frame-by-frame
             ret, frame = self.cap.read()
@@ -74,21 +91,16 @@ class VideoDiff:
                 # Zero out all color indexes not specified
                 # instead of extracting just the index
 
-                # colorindex = self.colortoindex[self.state]
-                # for index in self.colortoindex.values():
-                #     if index != colorindex:
-                #         frame[:, :, index] = 0
-
-                # color = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
                 color = frame
 
                 # First run, save color as prevframe and skip
                 # create mask of image of all changed values
                 # Fill changed values to 255
                 if prevframe is not False:
-                    imagemask = np.ma.masked_where(frame != prevframe, frame)
-                    imagemask.set_fill_value(self.fill_value)
-                    image = imagemask.filled()
+                    if self.dither_method == "diff":
+                        image = subtraction(color, prevframe, self.colortoindex)
+                    elif self.dither_method == "mask":
+                        image = mask(color, prevframe, self.fill_value)
                 else:
                     prevframe = color
                     continue

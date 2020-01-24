@@ -8,12 +8,18 @@ from util.video import VideoDiff
 def main():
 
     parser = argparse.ArgumentParser(
-            description="Compare frames from a video or capture device")
+        description="Compare frames from a video or capture device")
 
     parser.add_argument(
         "--fill-value",
         type=int,
-        help="Fill value for detected image changes")
+        help="Used with mask method, fill value for detected image changes.")
+    parser.add_argument(
+        "--dither-method",
+        "-x",
+        default="subtract",
+        choices=("mask", "diff"),
+        help="Dither detection method")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
             "--display",
@@ -41,6 +47,7 @@ def main():
     video = VideoDiff(
         source,
         fill_value=args.fill_value,
+        dither_method=args.dither_method,
     )
 
     if args.display is True:
