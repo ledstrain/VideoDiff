@@ -11,15 +11,15 @@ def main():
         description="Compare frames from a video or capture device")
 
     parser.add_argument(
-        "--fill-value",
-        type=int,
-        help="Used with mask method, fill value for detected image changes.")
+            "--fill-value",
+            type=int,
+            help="Used with mask method, fill value for detected image changes.")
     parser.add_argument(
-        "--dither-method",
-        "-x",
-        default="subtract",
-        choices=("mask", "diff"),
-        help="Dither detection method")
+            "--dither-method",
+            "-x",
+            default="subtract",
+            choices=("mask", "diff"),
+            help="Dither detection method")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
             "--display",
