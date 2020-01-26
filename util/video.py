@@ -69,6 +69,7 @@ class VideoDiff:
 
     def __render(self):
         prevframe = False
+        color = None
 
         def subtraction(fframe, fprevframe, colortoindex):
             # Zero out all color indexes not specified
