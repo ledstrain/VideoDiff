@@ -2,3 +2,5 @@
 .idea/
 
 util/__pycache__/
+
+*.swp
