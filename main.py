@@ -42,7 +42,7 @@ def main():
 
     args = parser.parse_args()
 
-    source = args.cap if args.cap != None else args.file
+    source = args.cap if args.cap is not None else args.file
 
     video = VideoDiff(
         source,
