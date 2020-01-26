@@ -5,6 +5,7 @@ import numpy as np
 class VideoDiff:
     def __init__(self, source):
         self.cap = cv2.VideoCapture(source)
+        self.windowname = None
 
     def __del__(self):
         # When everything done, release the capture
@@ -14,8 +15,7 @@ class VideoDiff:
     def show(self):
         try:
             for vimage in self._render():
-                windowname = "Dither"
-                cv2.imshow(windowname, vimage)
+                cv2.imshow(self.windowname, vimage)
 
         except KeyboardInterrupt:
             print("\nExiting")
@@ -39,6 +39,7 @@ class VideoDiff:
 class Dithering(VideoDiff):
     def __init__(self, source, fill_value=0, dither_method="diff", state="g"):
         super(Dithering, self).__init__(source=source)
+        self.windowname = "Dithering"
         self.fill_value = fill_value
         self.dither_method = dither_method
         self.state = state
@@ -70,9 +71,12 @@ class Dithering(VideoDiff):
         return masked_frame
 
     def __frame_input(self):
+        inputkey = cv2.waitKey(1)
+
         def getkeybind(key):
-            if cv2.waitKey(1) == ord(key):
-                return key
+            if inputkey == ord(key):
+                return True
+
         # quit when 'q' is pressed on the image window
         if getkeybind('q'):
             print("q: Quit program")
@@ -93,6 +97,7 @@ class Dithering(VideoDiff):
     def _render(self):
         prevframe = None
         color = None
+        image = None
 
         self.__frame_input()
 
