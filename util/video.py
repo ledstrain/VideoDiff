@@ -91,7 +91,7 @@ class Dithering(VideoDiff):
             self.state = 'm'
 
     def _render(self):
-        prevframe = False
+        prevframe = None
         color = None
 
         self.__frame_input()
@@ -103,14 +103,14 @@ class Dithering(VideoDiff):
             ret, frame = self.cap.read()
             if ret is True:
                 # Save the previous frame
-                if prevframe is not False:
+                if prevframe is not None:
                     prevframe = color
                 color = frame
 
                 # First run, save color as prevframe and skip
                 # create __mask of image of all changed values
                 # Fill changed values to 255
-                if prevframe is not False:
+                if prevframe is not None:
                     if self.state in self.colortoindex.keys():
                         image = self.__subtraction(color, prevframe, self.colortoindex, state=self.state)
                     elif self.state == 'm':
