@@ -3,7 +3,7 @@ import numpy as np
 
 
 class VideoDiff:
-    def __init__(self, source, fill_value=0, dither_method="diff"):
+    def __init__(self, source, fill_value=0, dither_method="diff", state="g"):
         self.colortoindex = {
             "b": 0,
             "g": 1,
@@ -12,7 +12,7 @@ class VideoDiff:
 
         self.fill_value = fill_value
         self.cap = cv2.VideoCapture(source)
-        self.state = 'g'
+        self.state = state
         self.dither_method = dither_method
 
     def __del__(self):
@@ -28,10 +28,11 @@ class VideoDiff:
     def show(self):
         try:
             for vimage in self.__render():
-                if self.dither_method == "diff":
-                    windowname = 'Diff {}'.format(self.state.upper())
-                elif self.dither_method == "mask":
-                    windowname = "Masked"
+                # if self.dither_method == "diff":
+                #     windowname = 'Diff {}'.format(self.state.upper())
+                # elif self.dither_method == "mask":
+                #     windowname = "Masked"
+                windowname = "Dither"
                 cv2.imshow(windowname, vimage)
 
                 # quit when 'q' is pressed on the image window
@@ -47,6 +48,9 @@ class VideoDiff:
                 if self.getKeyBind('b') and self.state != 'b':
                     print("b: Switching to blue channel")
                     self.state = 'b'
+                if self.getKeyBind('m') and self.state != 'm':
+                    print("m: Switching to masking method")
+                    self.state = 'm'
 
         except KeyboardInterrupt:
             print("\nExiting")
@@ -77,9 +81,8 @@ class VideoDiff:
             return frame_difference
 
         def mask(fframe, fprevframe, fill_value):
-            # Masking allows showing full color
-            # Zero out all color indexes not specified
-            # instead of extracting just the index
+            # Mask frame over old frame
+            # If element is different, change value to fill_value
             imagemask = np.ma.masked_where(fframe != fprevframe, fframe)
             imagemask.set_fill_value(fill_value)
             masked_frame = imagemask.filled()
@@ -98,9 +101,9 @@ class VideoDiff:
                 # create mask of image of all changed values
                 # Fill changed values to 255
                 if prevframe is not False:
-                    if self.dither_method == "diff":
+                    if self.state in self.colortoindex.keys():
                         image = subtraction(color, prevframe, self.colortoindex)
-                    elif self.dither_method == "mask":
+                    elif self.state == 'm':
                         image = mask(color, prevframe, self.fill_value)
                 else:
                     prevframe = color

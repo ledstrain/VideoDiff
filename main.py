@@ -17,8 +17,8 @@ def main():
     parser.add_argument(
             "--dither-method",
             "-x",
-            default="subtract",
-            choices=("mask", "diff"),
+            default="g",
+            choices=("r", "g", "b", "m"),
             help="Dither detection method")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -42,12 +42,12 @@ def main():
 
     args = parser.parse_args()
 
-    source = args.cap if args.cap != None else args.file
+    source = args.cap if args.cap is not None else args.file
 
     video = VideoDiff(
         source,
         fill_value=args.fill_value,
-        dither_method=args.dither_method,
+        state=args.dither_method,
     )
 
     if args.display is True:
