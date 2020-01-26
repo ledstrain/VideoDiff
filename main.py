@@ -11,9 +11,9 @@ def main():
         description="Compare frames from a video or capture device")
 
     parser.add_argument(
-        "--fill-value",
-        type=int,
-        help="Used with mask method, fill value for detected image changes.")
+            "--fill-value",
+            type=int,
+            help="Used with mask method, fill value for detected image changes.")
     parser.add_argument(
         "--dither-method",
         "-x",
@@ -42,7 +42,7 @@ def main():
 
     args = parser.parse_args()
 
-    source = args.cap if args.cap else args.file
+    source = args.cap if args.cap != None else args.file
 
     video = VideoDiff(
         source,
