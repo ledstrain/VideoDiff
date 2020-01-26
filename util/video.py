@@ -74,23 +74,23 @@ class Dithering(VideoDiff):
         inputkey = cv2.waitKey(1)
 
         def getkeybind(key):
-            if inputkey == ord(key):
+            if inputkey == ord(key) and self.state != key:
                 return True
 
         # quit when 'q' is pressed on the image window
         if getkeybind('q'):
             print("q: Quit program")
             exit(0)
-        elif getkeybind('r') and self.state != 'r':
+        elif getkeybind('r'):
             print("r: Switching to red channel")
             self.state = 'r'
-        elif getkeybind('g') and self.state != 'g':
+        elif getkeybind('g'):
             print("g: Switching to green channel")
             self.state = 'g'
-        elif getkeybind('b') and self.state != 'b':
+        elif getkeybind('b'):
             print("b: Switching to blue channel")
             self.state = 'b'
-        elif getkeybind('m') and self.state != 'm':
+        elif getkeybind('m'):
             print("m: Switching to masking method")
             self.state = 'm'
 
