@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-
+from sys import argv, exit
 from util.video import VideoDiff
 
 
@@ -39,6 +39,10 @@ def main():
             "--file",
             type=str,
             help="Path to AVI file to use instead of a video device")
+
+    if (len(argv) < 2):
+        parser.print_usage()
+        exit(1)
 
     args = parser.parse_args()
 
