@@ -1,11 +1,15 @@
-ImageComparator
-===============
+VideoDiff
+=========
 
 A program to attempt to test a video source for temporal dithering and other visual artifacts
 
 # License
 
-NDA. Will probably be changed to GPL for public release
+GPLv2 (see LICENSE)
+
+# Warning
+
+Documentation is incomplete and more work needs to be done
 
 # Requirements
 
@@ -15,9 +19,9 @@ NDA. Will probably be changed to GPL for public release
 - ffmpeg (need to test how library linking works)
 
 # Tested platforms
-x86_64 Windows 7
+Windows x86_64
 
-x86_64 Linux (early prototype version)
+Linux x86_64 (Gentoo)
 
 # Keybindings
 
@@ -26,6 +30,8 @@ x86_64 Linux (early prototype version)
 `g`: Switch to the green channel
 
 `b`: Switch to the blue channel
+
+`m`: Switch to mask mode
 
 `q`: Quit
 
@@ -43,3 +49,8 @@ Solution: Look into moving input to another thread
 Problem: Video speed isn't constant
 
 Solution: This isn't meant to be a constant time media player, but more investigation work is needed
+
+
+Problem: On Windows `--output` doesn't work
+
+Solution: Investigate possible OpenCV library issues. For now use a third party video capture tool such as [VirtualDub](https://www.videohelp.com/software/Virtualdub) with the [Lagarith Lossless codec](https://lags.leetcode.net/codec.html) (recommended)
