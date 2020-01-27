@@ -11,9 +11,29 @@ GPLv2 (see LICENSE)
 
 Documentation is incomplete and more work needs to be done
 
+```
+usage: main.py [-h] [--fill-value FILL_VALUE] [--dither-method {r,g,b,m}]
+               [--display | --output OUTPUT] [--cap CAP | --file FILE]
+
+Compare frames from a video or capture device
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --fill-value FILL_VALUE
+                        Used with mask method, fill value for detected image
+                        changes.
+  --dither-method {r,g,b,m}, -x {r,g,b,m}
+                        Dither detection method
+  --display, -d
+  --output OUTPUT, -o OUTPUT
+                        Output file, must be .avi format
+  --cap CAP             Index value of cv2.VideoCapture device
+  --file FILE           Path to AVI file to use instead of a video device
+```
+
 # Requirements
 
-- Python3
+- Python >= 3.4
 - NumPy
 - OpenCV with Python bindings
 - ffmpeg (need to test how library linking works)
@@ -34,13 +54,3 @@ Linux x86_64 (Gentoo)
 `m`: Switch to mask mode
 
 `q`: Quit
-
-# Known issues
-Problem: Video speed isn't constant
-
-Solution: This isn't meant to be a constant time media player, but more investigation work is needed
-
-
-Problem: On Windows `--output` doesn't work
-
-Solution: Investigate possible OpenCV library issues. For now use a third party video capture tool such as [VirtualDub](https://www.videohelp.com/software/Virtualdub) with the [Lagarith Lossless codec](https://lags.leetcode.net/codec.html) (recommended)
