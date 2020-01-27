@@ -11,6 +11,26 @@ GPLv2 (see LICENSE)
 
 Documentation is incomplete and more work needs to be done
 
+```
+usage: main.py [-h] [--fill-value FILL_VALUE] [--dither-method {r,g,b,m}]
+               [--display | --output OUTPUT] [--cap CAP | --file FILE]
+
+Compare frames from a video or capture device
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --fill-value FILL_VALUE
+                        Used with mask method, fill value for detected image
+                        changes.
+  --dither-method {r,g,b,m}, -x {r,g,b,m}
+                        Dither detection method
+  --display, -d
+  --output OUTPUT, -o OUTPUT
+                        Output file, must be .avi format
+  --cap CAP             Index value of cv2.VideoCapture device
+  --file FILE           Path to AVI file to use instead of a video device
+```
+
 # Requirements
 
 - Python3
