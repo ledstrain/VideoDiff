@@ -2,7 +2,7 @@
 
 import argparse
 from sys import argv, exit
-from util.video import VideoDiff
+from util.video import Dithering
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
             type=str,
             help="Path to AVI file to use instead of a video device")
 
-    if (len(argv) < 2):
+    if len(argv) < 2:
         parser.print_usage()
         exit(1)
 
@@ -48,7 +48,7 @@ def main():
 
     source = args.cap if args.cap is not None else args.file
 
-    video = VideoDiff(
+    video = Dithering(
         source,
         fill_value=args.fill_value,
         state=args.dither_method,
