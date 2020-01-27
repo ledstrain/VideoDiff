@@ -34,13 +34,3 @@ Linux x86_64 (Gentoo)
 `m`: Switch to mask mode
 
 `q`: Quit
-
-# Known issues
-Problem: Video speed isn't constant
-
-Solution: This isn't meant to be a constant time media player, but more investigation work is needed
-
-
-Problem: On Windows `--output` doesn't work
-
-Solution: Investigate possible OpenCV library issues. For now use a third party video capture tool such as [VirtualDub](https://www.videohelp.com/software/Virtualdub) with the [Lagarith Lossless codec](https://lags.leetcode.net/codec.html) (recommended)
