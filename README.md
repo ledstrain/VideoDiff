@@ -33,7 +33,7 @@ optional arguments:
 
 # Requirements
 
-- Python3
+- Python >= 3.4
 - NumPy
 - OpenCV with Python bindings
 - ffmpeg (need to test how library linking works)
