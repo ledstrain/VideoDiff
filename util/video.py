@@ -14,6 +14,7 @@ class VideoDiff:
 
     def show(self):
         try:
+            cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
             for vimage in self._render():
                 cv2.imshow(self.windowname, vimage)
 
