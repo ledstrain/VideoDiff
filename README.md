@@ -3,11 +3,11 @@ VideoDiff
 
 A program to attempt to test a video source for temporal dithering and other visual artifacts
 
-# License
+## License
 
 GPLv2 (see LICENSE)
 
-# Warning
+## Warning
 
 Documentation is incomplete and more work needs to be done
 
@@ -31,19 +31,19 @@ optional arguments:
   --file FILE           Path to AVI file to use instead of a video device
 ```
 
-# Requirements
+## Requirements
 
 - Python >= 3.4
 - NumPy
 - OpenCV with Python bindings
 - ffmpeg (need to test how library linking works)
 
-# Tested platforms
+## Tested platforms
 Windows x86_64
 
 Linux x86_64 (Gentoo)
 
-# Keybindings
+## Keybindings
 
 `r`: Switch to the red channel
 
