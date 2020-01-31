@@ -38,11 +38,10 @@ class VideoDiff:
 
 
 class Dithering(VideoDiff):
-    def __init__(self, source, fill_value=0, dither_method="diff", state="g"):
+    def __init__(self, source, fill_value=0, state="g"):
         super(Dithering, self).__init__(source=source)
         self.windowname = "Dithering"
         self.fill_value = fill_value
-        self.dither_method = dither_method
         self.state = state
 
         self.colortoindex = {

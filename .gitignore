@@ -4,3 +4,5 @@
 util/__pycache__/
 
 *.swp
+
+__pycache__/
