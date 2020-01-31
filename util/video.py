@@ -43,6 +43,7 @@ class Dithering(VideoDiff):
         self.windowname = "Dithering"
         self.fill_value = fill_value
         self.state = state
+        self.framebyframe = False
 
         self.colortoindex = {
             "b": 0,
@@ -82,23 +83,33 @@ class Dithering(VideoDiff):
         if getkeybind('q'):
             print("q: Quit program")
             exit(0)
-        elif getkeybind('p'):
-            while getkeybind('p') is True:
-                inputkey = cv2.waitKey(0)
-                if getkeybind('p'):
-                    break
         elif getkeybind('r'):
             print("r: Switching to red channel")
             self.state = 'r'
+            self.framebyframe = False
         elif getkeybind('g'):
             print("g: Switching to green channel")
             self.state = 'g'
+            self.framebyframe = False
         elif getkeybind('b'):
             print("b: Switching to blue channel")
             self.state = 'b'
+            self.framebyframe = False
         elif getkeybind('m'):
             print("m: Switching to masking method")
             self.state = 'm'
+            self.framebyframe = False
+
+        if getkeybind('p') or self.framebyframe is True:
+            self.framebyframe = True
+            while self.framebyframe is True \
+                    or inputkey == -1 \
+                    or getkeybind('p'):
+                inputkey = cv2.waitKey(0)
+                if getkeybind('p'):
+                    break
+                else:
+                    self.framebyframe = False
 
     def _render(self):
         prevframe = None
