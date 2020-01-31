@@ -72,6 +72,7 @@ class Dithering(VideoDiff):
 
     def __frame_input(self):
         inputkey = cv2.waitKey(1)
+        print(inputkey)
 
         def getkeybind(key):
             if inputkey == ord(key) and self.state != key:
@@ -81,6 +82,11 @@ class Dithering(VideoDiff):
         if getkeybind('q'):
             print("q: Quit program")
             exit(0)
+        elif getkeybind('p'):
+            while getkeybind('p') is True:
+                inputkey = cv2.waitKey(0)
+                if getkeybind('p'):
+                    break
         elif getkeybind('r'):
             print("r: Switching to red channel")
             self.state = 'r'
@@ -98,8 +104,6 @@ class Dithering(VideoDiff):
         prevframe = None
         color = None
         image = None
-
-        self.__frame_input()
 
         while self.cap.isOpened():
             self.__frame_input()
