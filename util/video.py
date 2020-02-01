@@ -82,6 +82,10 @@ class Dithering(VideoDiff):
         if getkeybind('q'):
             print("q: Quit program")
             exit(0)
+        elif getkeybind('n'):
+            print("n: Switching to normal mode")
+            self.state = 'n'
+            self.framebyframe = False
         elif getkeybind('r'):
             print("r: Switching to red channel")
             self.state = 'r'
@@ -135,6 +139,8 @@ class Dithering(VideoDiff):
                         image = self.__subtraction(color, prevframe, self.colortoindex, state=self.state)
                     elif self.state == 'm':
                         image = self.__mask(color, prevframe, self.fill_value)
+                    elif self.state == 'n':
+                        image = color
                 else:
                     prevframe = color
                     continue

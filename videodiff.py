@@ -18,7 +18,7 @@ def main():
             "--dither-method",
             "-x",
             default="g",
-            choices=("r", "g", "b", "m"),
+            choices=("r", "g", "b", "m", "n"),
             help="Dither detection method")
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
