@@ -73,7 +73,6 @@ class Dithering(VideoDiff):
 
     def __frame_input(self):
         inputkey = cv2.waitKey(1)
-        print(inputkey)
 
         def getkeybind(key):
             if inputkey == ord(key) and self.state != key:
@@ -100,6 +99,7 @@ class Dithering(VideoDiff):
             self.state = 'm'
             self.framebyframe = False
 
+        # No key entered is -1
         if getkeybind('p') or self.framebyframe is True:
             self.framebyframe = True
             while self.framebyframe is True \
