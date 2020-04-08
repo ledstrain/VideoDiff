@@ -15,7 +15,7 @@ class VideoDiff:
     def show(self):
         try:
             cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
-            for vimage in self._render():
+            for vimage in self._render(self.cap):
                 cv2.imshow(self.windowname, vimage)
 
         except KeyboardInterrupt:
@@ -29,18 +29,18 @@ class VideoDiff:
         height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
         out = cv2.VideoWriter(path, fourcc, fps, (width, height))
-        for vimage in self._render():
+        for vimage in self._render(self.cap):
             out.write(vimage)
         out.release()
 
-    def _render(self):
+    def _render(self, capture_source):
         raise AttributeError('Should be defined in subclass')
 
 
-class Dithering(VideoDiff):
+class SimpleDither(VideoDiff):
     def __init__(self, source, fill_value=0, state="g"):
-        super(Dithering, self).__init__(source=source)
-        self.windowname = "Dithering"
+        super(SimpleDither, self).__init__(source=source)
+        self.windowname = "SimpleDither"
         self.fill_value = fill_value
         self.state = state
         self.framebyframe = False
@@ -115,16 +115,16 @@ class Dithering(VideoDiff):
                 else:
                     self.framebyframe = False
 
-    def _render(self):
+    def _render(self, capture_source):
         prevframe = None
         color = None
         image = None
 
-        while self.cap.isOpened():
+        while capture_source.isOpened():
             self.__frame_input()
 
             # Capture frame-by-frame
-            ret, frame = self.cap.read()
+            ret, frame = capture_source.read()
             if ret is True:
                 # Save the previous frame
                 if prevframe is not None:

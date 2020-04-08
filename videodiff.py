@@ -2,7 +2,7 @@
 
 import argparse
 from sys import argv, exit
-from util.video import Dithering
+from util.video import SimpleDither
 
 
 def main():
@@ -48,7 +48,7 @@ def main():
 
     source = args.cap if args.cap is not None else args.file
 
-    video = Dithering(
+    video = SimpleDither(
         source,
         fill_value=args.fill_value,
         state=args.dither_method,
