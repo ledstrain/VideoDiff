@@ -12,26 +12,26 @@ class VideoDiff:
         cv2.destroyAllWindows()
         self.cap.release()
 
-    def show(self):
+    def process(self, display=True, output_path=None):
         try:
-            cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
-            for vimage in self._render(self.cap):
-                cv2.imshow(self.windowname, vimage)
+            if display is True:
+                cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
+            if output_path is not None:
+                fourcc = cv2.VideoWriter_fourcc(*'XVID')
+                fps = self.cap.get(cv2.CAP_PROP_FPS)
+                width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
+                out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+            for vimage in self._render(self.cap):
+                if display is True:
+                    cv2.imshow(self.windowname, vimage)
+                if output_path is not None:
+                    out.write(vimage)
         except KeyboardInterrupt:
             print("\nExiting")
             exit(0)
-
-    def save(self, path):
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        fps = self.cap.get(cv2.CAP_PROP_FPS)
-        width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-        out = cv2.VideoWriter(path, fourcc, fps, (width, height))
-        for vimage in self._render(self.cap):
-            out.write(vimage)
-        out.release()
 
     def _render(self, capture_source):
         raise AttributeError('Should be defined in subclass')

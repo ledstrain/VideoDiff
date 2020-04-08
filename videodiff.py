@@ -22,14 +22,13 @@ def main():
             choices=("r", "g", "b", "m", "n"),
             help="Dither detection method",
             )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
+    parser.add_argument(
             "--display",
             "-d",
             action='store_true',
             default=True,
             )
-    group.add_argument(
+    parser.add_argument(
             "--output",
             "-o",
             type=str,
@@ -61,10 +60,7 @@ def main():
         state=args.dither_method,
     )
 
-    if args.display is True:
-        video.show()
-    if args.output:
-        video.save(args.output)
+    video.process(display=args.display, output_path=args.output)
 
 
 if __name__ == '__main__':
