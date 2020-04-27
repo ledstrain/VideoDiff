@@ -78,42 +78,41 @@ class Dithering(VideoDiff):
             if inputkey == ord(key) and self.state != key:
                 return True
 
-        # quit when 'q' is pressed on the image window
-        if getkeybind('q'):
-            print("q: Quit program")
-            exit(0)
-        elif getkeybind('n'):
-            print("n: Switching to normal mode")
-            self.state = 'n'
-            self.framebyframe = False
-        elif getkeybind('r'):
-            print("r: Switching to red channel")
-            self.state = 'r'
-            self.framebyframe = False
-        elif getkeybind('g'):
-            print("g: Switching to green channel")
-            self.state = 'g'
-            self.framebyframe = False
-        elif getkeybind('b'):
-            print("b: Switching to blue channel")
-            self.state = 'b'
-            self.framebyframe = False
-        elif getkeybind('m'):
-            print("m: Switching to masking method")
-            self.state = 'm'
-            self.framebyframe = False
+        def processInput():
+            # quit when 'q' is pressed on the image window
+            if getkeybind('q'):
+                print("q: Quit program")
+                exit(0)
+            elif getkeybind('n'):
+                print("n: Switching to normal mode")
+                self.state = 'n'
+                return 'n'
+            elif getkeybind('r'):
+                print("r: Switching to red channel")
+                self.state = 'r'
+                return 'r'
+            elif getkeybind('g'):
+                print("g: Switching to green channel")
+                self.state = 'g'
+                return'g'
+            elif getkeybind('b'):
+                print("b: Switching to blue channel")
+                self.state = 'b'
+                return 'b'
+            elif getkeybind('m'):
+                print("m: Switching to masking method")
+                self.state = 'm'
+                return 'm'
+            elif getkeybind('p'):
+                self.framebyframe = True
+                return 'p'
+            elif getkeybind('c'):
+                self.framebyframe = False
+                return 'c'
 
-        # No key entered is -1
-        if getkeybind('p') or self.framebyframe is True:
-            self.framebyframe = True
-            while self.framebyframe is True \
-                    or inputkey == -1 \
-                    or getkeybind('p'):
-                inputkey = cv2.waitKey(0)
-                if getkeybind('p'):
-                    break
-                else:
-                    self.framebyframe = False
+        return processInput()
+
+
 
     def _render(self):
         prevframe = None
@@ -121,10 +120,15 @@ class Dithering(VideoDiff):
         image = None
 
         while self.cap.isOpened():
-            self.__frame_input()
+            keyinput = self.__frame_input()
+            if self.framebyframe:
+                if keyinput == 'p':
+                    ret, frame = self.cap.read()
+                else:
+                    continue
+            else:
+                ret, frame = self.cap.read()
 
-            # Capture frame-by-frame
-            ret, frame = self.cap.read()
             if ret is True:
                 # Save the previous frame
                 if prevframe is not None:
