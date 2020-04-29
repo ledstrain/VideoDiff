@@ -6,3 +6,5 @@ util/__pycache__/
 *.swp
 
 __pycache__/
+
+venv/
