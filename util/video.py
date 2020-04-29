@@ -12,35 +12,35 @@ class VideoDiff:
         cv2.destroyAllWindows()
         self.cap.release()
 
-    def show(self):
+    def process(self, display=True, output_path=None):
         try:
-            cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
-            for vimage in self._render():
-                cv2.imshow(self.windowname, vimage)
+            if display is True:
+                cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
+            if output_path is not None:
+                fourcc = cv2.VideoWriter_fourcc(*'XVID')
+                fps = self.cap.get(cv2.CAP_PROP_FPS)
+                width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
+                out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+            for vimage in self._render(self.cap):
+                if display is True:
+                    cv2.imshow(self.windowname, vimage)
+                if output_path is not None:
+                    out.write(vimage)
         except KeyboardInterrupt:
             print("\nExiting")
             exit(0)
 
-    def save(self, path):
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        fps = self.cap.get(cv2.CAP_PROP_FPS)
-        width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-        out = cv2.VideoWriter(path, fourcc, fps, (width, height))
-        for vimage in self._render():
-            out.write(vimage)
-        out.release()
-
-    def _render(self):
+    def _render(self, capture_source):
         raise AttributeError('Should be defined in subclass')
 
 
-class Dithering(VideoDiff):
+class SimpleDither(VideoDiff):
     def __init__(self, source, fill_value=0, state="g"):
-        super(Dithering, self).__init__(source=source)
-        self.windowname = "Dithering"
+        super(SimpleDither, self).__init__(source=source)
+        self.windowname = "SimpleDither"
         self.fill_value = fill_value
         self.state = state
         self.framebyframe = False
@@ -115,16 +115,16 @@ class Dithering(VideoDiff):
                 else:
                     self.framebyframe = False
 
-    def _render(self):
+    def _render(self, capture_source):
         prevframe = None
         color = None
         image = None
 
-        while self.cap.isOpened():
+        while capture_source.isOpened():
             self.__frame_input()
 
             # Capture frame-by-frame
-            ret, frame = self.cap.read()
+            ret, frame = capture_source.read()
             if ret is True:
                 # Save the previous frame
                 if prevframe is not None:
