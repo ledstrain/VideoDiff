@@ -12,8 +12,9 @@ GPLv2 (see LICENSE)
 Documentation is incomplete and more work needs to be done
 
 ```
-usage: main.py [-h] [--fill-value FILL_VALUE] [--dither-method {r,g,b,m}]
-               [--display | --output OUTPUT] [--cap CAP | --file FILE]
+usage: __main__.py [-h] [--fill-value FILL_VALUE]
+                   [--dither-method {r,g,b,m,n}] [--display] [--output OUTPUT]
+                   [--cap CAP | --file FILE]
 
 Compare frames from a video or capture device
 
@@ -22,7 +23,7 @@ optional arguments:
   --fill-value FILL_VALUE
                         Used with mask method, fill value for detected image
                         changes.
-  --dither-method {r,g,b,m}, -x {r,g,b,m}
+  --dither-method {r,g,b,m,n}, -x {r,g,b,m,n}
                         Dither detection method
   --display, -d
   --output OUTPUT, -o OUTPUT

@@ -61,10 +61,7 @@ def main():
         state=args.dither_method,
     )
 
-    if args.display is True:
-        video.show()
-    if args.output:
-        video.save(args.output)
+    video.process(display=args.display, output_path=args.output)
 
 
 if __name__ == '__main__':
