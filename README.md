@@ -12,7 +12,7 @@ GPLv2 (see LICENSE)
 Documentation is incomplete and more work needs to be done
 
 ```
-usage: __main__.py [-h] [--fill-value FILL_VALUE]
+usage: videodiff.py [-h] [--fill-value FILL_VALUE]
                    [--dither-method {r,g,b,m,n}] [--display] [--output OUTPUT]
                    [--cap CAP | --file FILE]
 
@@ -53,5 +53,9 @@ Linux x86_64 (Gentoo)
 `b`: Switch to the blue channel
 
 `m`: Switch to mask mode
+
+`p`: Switch to frame-to-frame mode
+
+`n`: Switch back to normal playback
 
 `q`: Quit
