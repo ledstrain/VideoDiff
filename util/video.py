@@ -72,7 +72,7 @@ class SimpleDither(VideoDiff):
         return masked_frame
 
     def __frame_input(self):
-        inputkey = cv2.waitKey(1)
+        inputkey = cv2.pollKey()
 
         def getkeybind(key):
             if inputkey == ord(key) and self.state != key:
