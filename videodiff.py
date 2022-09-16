@@ -3,7 +3,7 @@
 import argparse
 from sys import argv, exit
 from util.video import SimpleDither
-
+from util.image import ImageDiff
 
 def main():
 
@@ -21,6 +21,13 @@ def main():
             default="g",
             choices=("r", "g", "b", "m", "n"),
             help="Dither detection method",
+            )
+    parser.add_argument(
+            "--mode",
+            "-m",
+            default="dithering",
+            choices=("dithering", "image"),
+            help="Method of operation: dithering means differentiating frames sequentially from a video source, and image compares two arbitrary frames",
             )
     parser.add_argument(
             "--display",
@@ -43,6 +50,7 @@ def main():
     group.add_argument(
             "--file",
             type=str,
+            nargs="*",
             help="Path to AVI file to use instead of a video device",
             )
 
@@ -52,15 +60,34 @@ def main():
 
     args = parser.parse_args()
 
-    source = args.cap if args.cap is not None else args.file
+    filelen = len(args.file)
+    mode = args.mode
+    print(f"Number of file arguments: {filelen}, Mode {mode}")
 
-    video = SimpleDither(
-        source,
-        fill_value=args.fill_value,
-        state=args.dither_method,
-    )
+    if args.mode == "dithering":
+        if len(args.file) > 1:
+            print("Only one file is allowed")
+            exit(1)
+        file = args.file[0]
+        source = args.cap if args.cap is not None else file
+        video = SimpleDither(
+            source,
+            fill_value=args.fill_value,
+            state=args.dither_method,
+        )
 
-    video.process(display=args.display, output_path=args.output)
+        video.process(display=args.display, output_path=args.output)
+
+    if args.mode == 'image':
+        if len(args.file) != 2:
+            print("Need two files for image differentiation mode")
+            exit(1)
+        image = ImageDiff(
+                args.file,
+                fill_value=args.fill_value,
+                state=args.dither_method,
+        )
+        image.process(display=args.display)
 
 
 if __name__ == '__main__':
