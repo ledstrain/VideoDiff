@@ -40,8 +40,11 @@ class ImageDiff(WindowClass):
             "g": 1,
             "r": 2,
         }
+        self.needRender = True
 
-
+    def setState(self, key):
+        self.state = key
+        self.needRender = True
 
     @staticmethod
     def __subtraction(fframe, fprevframe, colortoindex, state=None):
@@ -66,7 +69,7 @@ class ImageDiff(WindowClass):
         return masked_frame
 
     def __frame_input(self):
-        inputkey = cv2.waitKey(1000)
+        inputkey = cv2.pollKey()
 
         def getkeybind(key):
             if inputkey == ord(key) and self.state != key:
@@ -79,24 +82,26 @@ class ImageDiff(WindowClass):
 
         elif getkeybind('r'):
             print("r: Switching to red channel")
-            self.state = 'r'
+            self.setState('r')
 
         elif getkeybind('g'):
             print("g: Switching to green channel")
-            self.state = 'g'
+            self.setState('g')
 
         elif getkeybind('b'):
             print("b: Switching to blue channel")
-            self.state = 'b'
+            self.setState('b')
 
         elif getkeybind('m'):
             print("m: Switching to masking method")
-            self.state = 'm'
+            self.setState('m')
 
     def _render(self, source):
         self.__frame_input()
-        if self.state in self.colortoindex.keys():
-            image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex, state=self.state)
-        elif self.state == 'm':
-            image = self.__mask(self.frame_a, self.frame_b, self.fill_value)
-        yield image
+        if self.needRender:
+            if self.state in self.colortoindex.keys():
+                image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex, state=self.state)
+            elif self.state == 'm':
+                image = self.__mask(self.frame_a, self.frame_b, self.fill_value)
+            self.needRender = False
+            yield image
