@@ -86,7 +86,7 @@ def main():
                 fill_value=args.fill_value,
                 state=args.dither_method,
         )
-        image.process(display=args.display)
+        image.process(display=args.display, output_path=args.output)
 
 
 if __name__ == '__main__':

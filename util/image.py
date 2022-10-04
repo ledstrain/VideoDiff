@@ -12,14 +12,20 @@ class WindowClass:
         # When everything done, release the capture
         cv2.destroyAllWindows()
 
-    def process(self, display=True):
+    def process(self, display=True, output_path=None):
         try:
             if display is True:
                 cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
             while True:
                 for image in self._render(self.source):
-                    if display is True:
+                    if output_path is not None:
+                        if cv2.haveImageWriter(output_path):
+                            cv2.imwrite(output_path, image, None)
+                    if display:
                          cv2.imshow(self.windowname, image)
+                    else:
+                        exit(0)
+
         except KeyboardInterrupt:
             print("\nExiting")
             exit(0)
