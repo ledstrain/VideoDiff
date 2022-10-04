@@ -21,7 +21,6 @@ class VideoDiff:
                 fps = self.cap.get(cv2.CAP_PROP_FPS)
                 width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                 height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
                 out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
             for vimage in self._render(self.cap):

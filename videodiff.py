@@ -62,7 +62,6 @@ def main():
 
     filelen = len(args.file)
     mode = args.mode
-    print(f"Number of file arguments: {filelen}, Mode {mode}")
 
     if args.mode == "dithering":
         if len(args.file) > 1:
