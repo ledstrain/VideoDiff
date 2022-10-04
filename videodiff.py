@@ -33,7 +33,7 @@ def main():
             "--display",
             "-d",
             action='store_true',
-            default=True,
+            default=False,
             )
     parser.add_argument(
             "--output",
