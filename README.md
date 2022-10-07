@@ -56,6 +56,8 @@ Linux x86_64 (Gentoo)
 
 `p`: Switch to frame-to-frame mode
 
-`n`: Switch back to normal playback
+`c`: Switch back to normal playback mode
+
+`n`: Display normal image
 
 `q`: Quit

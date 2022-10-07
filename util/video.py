@@ -107,8 +107,16 @@ class SimpleDither(VideoDiff):
             self.setState('m')
 
         elif getkeybind('p'):
-            self.framebyframe = True
+            if not self.framebyframe:
+                print("p: Switching to frame-to-frame mode")
+                self.framebyframe = True
             self.needRender = True
+
+        elif getkeybind('c'):
+            if self.framebyframe:
+                print("c: Switching back to normal playback mode")
+                self.framebyframe = False
+                self.needRender = True
 
     def _render(self, capture_source):
         prevframe = None
