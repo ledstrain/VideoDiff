@@ -70,6 +70,10 @@ class SimpleDither(VideoDiff):
         masked_frame = imagemask.filled()
         return masked_frame
 
+    def setState(self, key):
+        self.state = key
+        self.needRender = True
+
     def __frame_input(self):
         inputkey = cv2.pollKey()
 
@@ -81,38 +85,30 @@ class SimpleDither(VideoDiff):
         if getkeybind('q'):
             print("q: Quit program")
             exit(0)
+
         elif getkeybind('n'):
             print("n: Switching to normal mode")
-            self.state = 'n'
-            self.framebyframe = False
+            self.setState('n')
+
         elif getkeybind('r'):
             print("r: Switching to red channel")
-            self.state = 'r'
-            self.framebyframe = False
+            self.setState('r')
+
         elif getkeybind('g'):
             print("g: Switching to green channel")
-            self.state = 'g'
-            self.framebyframe = False
+            self.setState('g')
+
         elif getkeybind('b'):
             print("b: Switching to blue channel")
-            self.state = 'b'
-            self.framebyframe = False
+            self.setState('b')
+
         elif getkeybind('m'):
             print("m: Switching to masking method")
-            self.state = 'm'
-            self.framebyframe = False
+            self.setState('m')
 
-        # No key entered is -1
-        if getkeybind('p') or self.framebyframe is True:
+        elif getkeybind('p'):
             self.framebyframe = True
-            while self.framebyframe is True \
-                    or inputkey == -1 \
-                    or getkeybind('p'):
-                inputkey = cv2.waitKey(0)
-                if getkeybind('p'):
-                    break
-                else:
-                    self.framebyframe = False
+            self.needRender = True
 
     def _render(self, capture_source):
         prevframe = None
@@ -121,6 +117,8 @@ class SimpleDither(VideoDiff):
 
         while capture_source.isOpened():
             self.__frame_input()
+            if self.framebyframe and not self.needRender:
+                continue
 
             # Capture frame-by-frame
             ret, frame = capture_source.read()
@@ -143,7 +141,8 @@ class SimpleDither(VideoDiff):
                 else:
                     prevframe = color
                     continue
-
+                if self.framebyframe:
+                    self.needRender = False
                 yield image
 
             else:
