@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+from os import path
 from sys import argv, exit
 from util.video import SimpleDither
 from util.image import ImageDiff
@@ -39,7 +40,7 @@ def main():
             "--output",
             "-o",
             type=str,
-            help="Output file, must be .avi format",
+            help="Output directory for sequential image output",
             )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
@@ -74,6 +75,10 @@ def main():
             fill_value=args.fill_value,
             state=args.dither_method,
         )
+
+        if path.exists("{output}/2.tiff".format(output=args.output)):
+            print("Refusing to overwrite existing capture output")
+            exit(1)
 
         video.process(display=args.display, output_path=args.output)
 

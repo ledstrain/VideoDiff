@@ -16,18 +16,15 @@ class VideoDiff:
         try:
             if display is True:
                 cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
-            if output_path is not None:
-                fourcc = cv2.VideoWriter_fourcc(*'XVID')
-                fps = self.cap.get(cv2.CAP_PROP_FPS)
-                width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-                height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
 
             for vimage in self._render(self.cap):
                 if display is True:
                     cv2.imshow(self.windowname, vimage)
                 if output_path is not None:
-                    out.write(vimage)
+                    frame = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
+                    output_file = "{output_path}/{frame}.tiff".format(output_path=output_path, frame=frame)
+                    if cv2.haveImageWriter(output_file):
+                       cv2.imwrite(output_file, vimage, None) 
         except KeyboardInterrupt:
             print("\nExiting")
             exit(0)
