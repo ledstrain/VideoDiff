@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from os import path
+from os import path, makedirs
 from sys import argv, exit
 from util.video import SimpleDither
 from util.image import ImageDiff
@@ -75,12 +75,20 @@ def main():
             fill_value=args.fill_value,
             state=args.dither_method,
         )
+    if args.output is not None: 
+        if not path.exists(args.output):
+                try:
+                    makedirs(args.output)
+                except Exception as e:
+                    print("Unable to create directory")
+                    print(e)
+                    exit(1)
 
         if path.exists("{output}/2.tiff".format(output=args.output)):
             print("Refusing to overwrite existing capture output")
             exit(1)
 
-        video.process(display=args.display, output_path=args.output)
+    video.process(display=args.display, output_path=args.output)
 
     if args.mode == 'image':
         if len(args.file) != 2:
