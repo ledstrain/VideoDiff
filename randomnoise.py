@@ -11,12 +11,15 @@ class FrameGenerator:
         self.rng = np.random.default_rng(seed)
         self.frames = []
 
-    def generate_random_frame(self, height, width):
-        return self.rng.integers(256, size=(height, width, 3), dtype=np.uint8)
+    def generate_random_frame(self, height, width, frameinfo=None):
+        frame = self.rng.integers(256, size=(height, width, 3), dtype=np.uint8)
+        if frameinfo:
+            cv2.putText(frame, "{frame}/{totalframes}".format(frame=frameinfo['frame'], totalframes=frameinfo['totalframes']), (0, 20), cv2.FONT_HERSHEY_COMPLEX, 0.8*height, [255, 255, 255], 1, cv2.LINE_AA);
+        return frame
 
     def generate_frames(self, output=None):
         for i in range(0, self.sequence):
-            self.frames.append(self.generate_random_frame(self.height, self.width))
+            self.frames.append(self.generate_random_frame(self.height, self.width, {'frame': i, 'totalframes': self.sequence}))
             if output:
                 output_file = "{output_path}/{frame}.tiff".format(output_path=output, frame=i)
                 if cv2.haveImageWriter(output_file):
