@@ -42,6 +42,13 @@ def main():
             type=str,
             help="Output directory for sequential image output",
             )
+    parser.add_argument(
+            "--pause",
+            '-p',
+            action='store_true',
+            default=False,
+            help="Whether to pause at start"
+            )
     group = parser.add_mutually_exclusive_group()
     group.add_argument(
             "--cap",
@@ -74,6 +81,7 @@ def main():
             source,
             fill_value=args.fill_value,
             state=args.dither_method,
+            framebyframe=args.pause,
         )
     if args.output is not None: 
         if not path.exists(args.output):
