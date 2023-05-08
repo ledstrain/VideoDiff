@@ -34,12 +34,13 @@ class VideoDiff:
 
 
 class SimpleDither(VideoDiff):
-    def __init__(self, source, fill_value=0, state="g"):
+    def __init__(self, source, fill_value=0, state="g", framebyframe=False):
         super(SimpleDither, self).__init__(source=source)
         self.windowname = "SimpleDither"
         self.fill_value = fill_value
         self.state = state
-        self.framebyframe = False
+        self.framebyframe = framebyframe
+        self.needRender = True
 
         self.colortoindex = {
             "b": 0,
