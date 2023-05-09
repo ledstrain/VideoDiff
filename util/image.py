@@ -22,7 +22,7 @@ class WindowClass:
                         if cv2.haveImageWriter(output_path):
                             cv2.imwrite(output_path, image, None)
                     if display:
-                         cv2.imshow(self.windowname, image)
+                        cv2.imshow(self.windowname, image)
                     else:
                         exit(0)
 
@@ -45,7 +45,7 @@ class ImageDiff(WindowClass):
             "b": 0,
             "g": 1,
             "r": 2,
-            "a": 3, # absolute (not alpha, used internally)
+            "a": 3,  # absolute (not alpha, used internally)
         }
         self.needRender = True
 
@@ -108,6 +108,11 @@ class ImageDiff(WindowClass):
         elif getkeybind('m'):
             print("m: Switching to masking method")
             self.setState('m')
+
+        elif getkeybind('i'):
+            print("i: Inverting pair of images")
+            self.frame_a, self.frame_b = self.frame_b, self.frame_a
+            self.needRender = True
 
     def _render(self, source):
         self.__frame_input()
