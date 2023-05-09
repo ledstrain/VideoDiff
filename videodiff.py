@@ -63,18 +63,6 @@ def main():
 
     filelen = len(args.file)
     mode = args.mode
-
-    if args.mode == "dithering":
-        if len(args.file) > 1:
-            print("Only one file is allowed")
-            exit(1)
-        file = args.file[0]
-        source = args.cap if args.cap is not None else file
-        video = SimpleDither(
-            source,
-            fill_value=args.fill_value,
-            state=args.dither_method,
-        )
     if args.output is not None: 
         if not path.exists(args.output):
                 try:
@@ -88,7 +76,19 @@ def main():
             print("Refusing to overwrite existing capture output")
             exit(1)
 
-    video.process(display=args.display, output_path=args.output)
+    if args.mode == "dithering":
+        if len(args.file) > 1:
+            print("Only one file is allowed")
+            exit(1)
+        file = args.file[0]
+        source = args.cap if args.cap is not None else file
+        video = SimpleDither(
+            source,
+            fill_value=args.fill_value,
+            state=args.dither_method,
+            framebyframe=args.pause,
+        )
+        video.process(display=args.display, output_path=args.output)
 
     if args.mode == 'image':
         if len(args.file) != 2:
