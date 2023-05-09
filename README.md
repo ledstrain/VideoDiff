@@ -54,6 +54,8 @@ Linux x86_64 (Gentoo)
 
 `m`: Switch to mask mode
 
+`a`: Switch to absolute subtraction mode
+
 `p`: Switch to frame-to-frame mode
 
 `c`: Switch back to normal playback mode

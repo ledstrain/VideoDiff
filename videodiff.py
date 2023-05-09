@@ -20,7 +20,7 @@ def main():
             "--dither-method",
             "-x",
             default="g",
-            choices=("r", "g", "b", "m", "n"),
+            choices=("r", "g", "b", "a", "m", "n"),
             help="Dither detection method",
             )
     parser.add_argument(

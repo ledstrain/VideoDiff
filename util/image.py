@@ -45,6 +45,7 @@ class ImageDiff(WindowClass):
             "b": 0,
             "g": 1,
             "r": 2,
+            "a": 3, # absolute (not alpha, used internally)
         }
         self.needRender = True
 
@@ -60,7 +61,9 @@ class ImageDiff(WindowClass):
         fprevframe2 = fprevframe.copy()
         colorindex = colortoindex[state]
         for index in colortoindex.values():
-            if index != colorindex:
+            if state == 'a':
+                return fframe2 - fprevframe2
+            if index != colorindex and index < 3:
                 fframe2[:, :, index] = 0
         frame_difference = fframe2 - fprevframe2
         return frame_difference
@@ -97,6 +100,10 @@ class ImageDiff(WindowClass):
         elif getkeybind('b'):
             print("b: Switching to blue channel")
             self.setState('b')
+
+        elif getkeybind('a'):
+            print("a: Switching to absolute subtraction method")
+            self.setState('a')
 
         elif getkeybind('m'):
             print("m: Switching to masking method")

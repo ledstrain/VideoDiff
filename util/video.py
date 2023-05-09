@@ -46,6 +46,7 @@ class SimpleDither(VideoDiff):
             "b": 0,
             "g": 1,
             "r": 2,
+            "a": 3, # absolute (not alpha, used internally)
         }
 
     @staticmethod
@@ -54,7 +55,9 @@ class SimpleDither(VideoDiff):
         # instead of extracting just the index
         colorindex = colortoindex[state]
         for index in colortoindex.values():
-            if index != colorindex:
+            if state == 'a':
+                return fprevframe - fframe
+            if index != colorindex and index < 3:
                 fframe[:, :, index] = 0
         frame_difference = fframe - fprevframe
         return frame_difference
@@ -100,6 +103,10 @@ class SimpleDither(VideoDiff):
             print("b: Switching to blue channel")
             self.setState('b')
 
+        elif getkeybind('a'):
+            print("a: Switching to absolute subtraction method")
+            self.setState('a')
+        
         elif getkeybind('m'):
             print("m: Switching to masking method")
             self.setState('m')
