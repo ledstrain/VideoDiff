@@ -114,6 +114,14 @@ class ImageDiff(WindowClass):
             self.frame_a, self.frame_b = self.frame_b, self.frame_a
             self.needRender = True
 
+        elif getkeybind('1'):
+            print("1: Only displaying the first image")
+            self.setState(1)
+
+        elif getkeybind('2'):
+            print("2: Only displaying the second image")
+            self.setState(2)
+
     def _render(self, source):
         self.__frame_input()
         if self.needRender:
@@ -121,5 +129,10 @@ class ImageDiff(WindowClass):
                 image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex, state=self.state)
             elif self.state == 'm':
                 image = self.__mask(self.frame_a, self.frame_b, self.fill_value)
+            elif self.state == 1:
+                image = self.frame_a
+            elif self.state == 2:
+                image = self.frame_b
+
             self.needRender = False
             yield image
