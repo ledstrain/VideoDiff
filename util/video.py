@@ -66,9 +66,8 @@ class SimpleDither(VideoDiff):
     def __mask(fframe, fprevframe, fill_value):
         # Mask frame over old frame
         # If element is different, change value to fill_value
-        imagemask = np.ma.masked_where(fframe != fprevframe, fframe)
-        imagemask.set_fill_value(fill_value)
-        masked_frame = imagemask.filled()
+        masked_frame = np.where((fframe != fprevframe).any(axis=2, keepdims=True), [fill_value,fill_value,fill_value], fframe)
+        masked_frame = masked_frame.astype(np.uint8)
         return masked_frame
 
     def setState(self, key):
