@@ -14,6 +14,7 @@ def main():
     parser.add_argument(
             "--fill-value",
             type=int,
+            default=255,
             help="Used with mask method, fill value for detected image changes.",
             )
     parser.add_argument(
