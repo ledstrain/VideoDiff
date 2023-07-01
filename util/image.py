@@ -1,6 +1,7 @@
 import cv2
-import numpy as np
-
+from jax import numpy as np
+from jax import jit
+from numpy import asarray
 
 class WindowClass:
     def __init__(self, source):
@@ -22,7 +23,7 @@ class WindowClass:
                         if cv2.haveImageWriter(output_path):
                             cv2.imwrite(output_path, image, None)
                     if display:
-                        cv2.imshow(self.windowname, image)
+                        cv2.imshow(self.windowname, asarray(image))
                     else:
                         exit(0)
 
@@ -38,14 +39,13 @@ class ImageDiff(WindowClass):
     def __init__(self, source, fill_value=0, state="g"):
         super(ImageDiff, self).__init__(source=source)
         self.windowname = "ImageDiff"
-        self.fill_value = fill_value
+        self.fill = np.array([fill_value, fill_value, fill_value], dtype=np.uint8)
         self.state = state
         self.source = source
         self.colortoindex = {
             "b": 0,
             "g": 1,
             "r": 2,
-            "a": 3,  # absolute (not alpha, used internally)
         }
         self.needRender = True
 
@@ -54,25 +54,30 @@ class ImageDiff(WindowClass):
         self.needRender = True
 
     @staticmethod
-    def __subtraction(fframe, fprevframe, colortoindex, state=None):
+    def __subtraction(fframe, fprevframe, state):
         # Zero out all color indexes not specified
         # instead of extracting just the index
         fframe2 = fframe.copy()
         fprevframe2 = fprevframe.copy()
-        colorindex = colortoindex[state]
-        for index in colortoindex.values():
-            if state == 'a':
-                return fframe2 - fprevframe2
-            if index != colorindex and index < 3:
-                fframe2[:, :, index] = 0
+        for i in range(0, 3):
+            if i == state:
+                continue
+            fframe2[:, :, i] = 0
         frame_difference = fframe2 - fprevframe2
         return frame_difference
 
+
     @staticmethod
-    def __mask(fframe, fprevframe, fill_value):
+    @jit
+    def __abs_subtraction(fframe, fprevframe):
+        return fframe - fprevframe
+
+    @staticmethod
+    @jit
+    def __mask(fframe, fprevframe, fill):
         # Mask frame over old frame
         # If element is different, change value to fill_value
-        masked_frame = np.uint8(np.where((fframe != fprevframe).any(axis=2, keepdims=True), [fill_value,fill_value,fill_value], fframe))
+        masked_frame = np.uint8(np.where((fframe != fprevframe).any(axis=2, keepdims=True), fill, fframe))
         return masked_frame
 
     def __frame_input(self):
@@ -124,9 +129,11 @@ class ImageDiff(WindowClass):
         self.__frame_input()
         if self.needRender:
             if self.state in self.colortoindex.keys():
-                image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex, state=self.state)
+                image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex[self.state])
+            elif self.state == 'a':
+                image = self.__abs_subtraction(self.frame_a, self.frame_b)
             elif self.state == 'm':
-                image = self.__mask(self.frame_a, self.frame_b, self.fill_value)
+                image = self.__mask(self.frame_a, self.frame_b, self.fill)
             elif self.state == 1:
                 image = self.frame_a
             elif self.state == 2:

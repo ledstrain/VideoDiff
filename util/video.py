@@ -1,6 +1,7 @@
 import cv2
-import numpy as np
-
+from jax import numpy as np
+from jax import jit
+from numpy import asarray
 
 class VideoDiff:
     def __init__(self, source):
@@ -16,8 +17,8 @@ class VideoDiff:
         try:
             if display is True:
                 cv2.namedWindow(self.windowname, flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
-
             for vimage in self._render(self.cap):
+                vimage = asarray(vimage)
                 if display is True:
                     cv2.imshow(self.windowname, vimage)
                 if output_path is not None:
@@ -37,7 +38,7 @@ class SimpleDither(VideoDiff):
     def __init__(self, source, fill_value=0, state="g", framebyframe=False):
         super(SimpleDither, self).__init__(source=source)
         self.windowname = "SimpleDither"
-        self.fill_value = fill_value
+        self.fill = np.array([fill_value, fill_value, fill_value], dtype=np.uint8)
         self.state = state
         self.framebyframe = framebyframe
         self.needRender = True
@@ -46,27 +47,38 @@ class SimpleDither(VideoDiff):
             "b": 0,
             "g": 1,
             "r": 2,
-            "a": 3, # absolute (not alpha, used internally)
         }
 
     @staticmethod
-    def __subtraction(fframe, fprevframe, colortoindex, state=None):
-        # Zero out all color indexes not specified
-        # instead of extracting just the index
-        colorindex = colortoindex[state]
-        for index in colortoindex.values():
-            if state == 'a':
-                return fprevframe - fframe
-            if index != colorindex and index < 3:
-                fframe[:, :, index] = 0
-        frame_difference = fframe - fprevframe
-        return frame_difference
+    @jit
+    def __zero_after_first_index(fframe):
+        fframe = fframe.at[:, :, 1:3].set(0)
+        return fframe
 
     @staticmethod
-    def __mask(fframe, fprevframe, fill_value):
+    @jit
+    def __zero_even(fframe):
+        fframe = fframe.at[:, :, 0].set(0)
+        fframe = fframe.at[:, :, 2].set(0)
+        return fframe
+
+    @staticmethod
+    @jit
+    def __zero_all_except_last(fframe):
+        fframe = fframe.at[:, :, 0:2].set(0)
+        return fframe
+
+    @staticmethod
+    @jit
+    def __abs_subtraction(fframe, fprevframe):
+        return fframe - fprevframe
+
+    @staticmethod
+    @jit
+    def __mask(fframe, fprevframe, fill):
         # Mask frame over old frame
         # If element is different, change value to fill_value
-        masked_frame = np.uint8(np.where((fframe != fprevframe).any(axis=2, keepdims=True), [fill_value,fill_value,fill_value], fframe))
+        masked_frame = np.uint8(np.where((fframe != fprevframe).any(axis=2, keepdims=True), fill, fframe))
         masked_frame = masked_frame.astype(np.uint8)
         return masked_frame
 
@@ -145,9 +157,17 @@ class SimpleDither(VideoDiff):
                 # Fill changed values to 255
                 if prevframe is not None:
                     if self.state in self.colortoindex.keys():
-                        image = self.__subtraction(color, prevframe, self.colortoindex, state=self.state)
+                        if self.state == 'b':
+                            color = self.__zero_after_first_index(color)
+                        elif self.state == 'g':
+                            color = self.__zero_even(color)
+                        elif self.state == 'r':
+                            color = self.__zero_all_except_last(color)
+                        image = self.__abs_subtraction(color, prevframe)
+                    elif self.state == 'a':
+                        image = self.__abs_subtraction(color, prevframe)
                     elif self.state == 'm':
-                        image = self.__mask(color, prevframe, self.fill_value)
+                        image = self.__mask(color, prevframe, self.fill)
                     elif self.state == 'n':
                         image = color
                 else:
