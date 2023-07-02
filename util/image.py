@@ -45,7 +45,6 @@ class ImageDiff(WindowClass):
             "b": 0,
             "g": 1,
             "r": 2,
-            "a": 3,  # absolute (not alpha, used internally)
         }
         self.needRender = True
 
@@ -54,19 +53,22 @@ class ImageDiff(WindowClass):
         self.needRender = True
 
     @staticmethod
-    def __subtraction(fframe, fprevframe, colortoindex, state=None):
+    def __subtraction(fframe, fprevframe, state):
         # Zero out all color indexes not specified
         # instead of extracting just the index
         fframe2 = fframe.copy()
         fprevframe2 = fprevframe.copy()
-        colorindex = colortoindex[state]
-        for index in colortoindex.values():
-            if state == 'a':
-                return fframe2 - fprevframe2
-            if index != colorindex and index < 3:
-                fframe2[:, :, index] = 0
+        for i in range(0, 3):
+            if i == state:
+                continue
+            fframe2[:, :, i] = 0
         frame_difference = fframe2 - fprevframe2
         return frame_difference
+
+
+    @staticmethod
+    def __abs_subtraction(fframe, fprevframe):
+        return fframe - fprevframe
 
     @staticmethod
     def __mask(fframe, fprevframe, fill_value):
@@ -124,7 +126,9 @@ class ImageDiff(WindowClass):
         self.__frame_input()
         if self.needRender:
             if self.state in self.colortoindex.keys():
-                image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex, state=self.state)
+                image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex[self.state])
+            elif self.state == 'a':
+                image = self.__abs_subtraction(self.frame_a, self.frame_b)
             elif self.state == 'm':
                 image = self.__mask(self.frame_a, self.frame_b, self.fill_value)
             elif self.state == 1:
