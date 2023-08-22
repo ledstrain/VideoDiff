@@ -1,16 +1,26 @@
 import cv2
 import numpy as np
 import util.common as common
+from numpy import asarray
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class VideoDiff:
     def __init__(self, source):
         self.cap = cv2.VideoCapture(source)
         self.windowname = None
+        self._tdict = {}
+        self._tpe = ThreadPoolExecutor()
+
 
     def __del__(self):
         # When everything done, release the capture
         cv2.destroyAllWindows()
         self.cap.release()
+
+    def _save_frame(self, i, frame, output):
+        if cv2.haveImageWriter(output):
+            return cv2.imwrite(output, frame, None)
+    
 
     def process(self, display=True, output_path=None):
         try:
@@ -21,10 +31,14 @@ class VideoDiff:
                 if display is True:
                     cv2.imshow(self.windowname, vimage)
                 if output_path is not None:
-                    frame = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
-                    output_file = "{output_path}/{frame}.tiff".format(output_path=output_path, frame=frame)
-                    if cv2.haveImageWriter(output_file):
-                       cv2.imwrite(output_file, vimage, None) 
+                    i = int(self.cap.get(cv2.CAP_PROP_POS_FRAMES))
+                    output_file = "{output_path}/{frame}.tiff".format(output_path=output_path, frame=i)
+                    self._tdict.update({self._tpe.submit(self._save_frame, i, vimage, output_file): i})
+
+            for f in as_completed(self._tdict):
+                if not f.result():
+                    print("Error writing frame {i}".format(i=self._tdict[f]))
+
         except KeyboardInterrupt:
             print("\nExiting")
             exit(0)
