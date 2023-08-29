@@ -1,4 +1,5 @@
 import cv2
+import util.common as common
 from jax import numpy as np
 from jax import jit
 from numpy import asarray
@@ -61,38 +62,6 @@ class SimpleDither(VideoDiff):
             "g": 1,
             "r": 2,
         }
-
-    @staticmethod
-    @jit
-    def __zero_after_first_index(fframe):
-        fframe = fframe.at[:, :, 1:3].set(0)
-        return fframe
-
-    @staticmethod
-    @jit
-    def __zero_even(fframe):
-        fframe = fframe.at[:, :, 0].set(0)
-        fframe = fframe.at[:, :, 2].set(0)
-        return fframe
-
-    @staticmethod
-    @jit
-    def __zero_all_except_last(fframe):
-        fframe = fframe.at[:, :, 0:2].set(0)
-        return fframe
-
-    @staticmethod
-    @jit
-    def __abs_subtraction(fframe, fprevframe):
-        return fframe - fprevframe
-
-    @staticmethod
-    @jit
-    def __mask(fframe, fprevframe, fill):
-        # Mask frame over old frame
-        # If element is different, change value to fill_value
-        masked_frame = np.uint8(np.where((fframe != fprevframe).any(axis=2, keepdims=True), fill, fframe))
-        return masked_frame
 
     def setState(self, key):
         self.state = key
@@ -170,16 +139,16 @@ class SimpleDither(VideoDiff):
                 if prevframe is not None:
                     if self.state in self.colortoindex.keys():
                         if self.state == 'b':
-                            color = self.__zero_after_first_index(color)
+                            color = common.zero_after_first_index(color)
                         elif self.state == 'g':
-                            color = self.__zero_even(color)
+                            color = common.zero_middle(color)
                         elif self.state == 'r':
-                            color = self.__zero_all_except_last(color)
-                        image = self.__abs_subtraction(color, prevframe)
+                            color = common.zero_all_except_last(color)
+                        image = common.abs_subtraction(color, prevframe)
                     elif self.state == 'a':
-                        image = self.__abs_subtraction(color, prevframe)
+                        image = common.abs_subtraction(color, prevframe)
                     elif self.state == 'm':
-                        image = self.__mask(color, prevframe, self.fill)
+                        image = common.mask(color, prevframe, self.fill)
                     elif self.state == 'n':
                         image = color
                 else:
