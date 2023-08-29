@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 import cv2
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class FrameGenerator:
     def __init__(self, sequence, width, height, seed):
@@ -9,7 +10,8 @@ class FrameGenerator:
         self.height = height
         self.seed = seed
         self.rng = np.random.default_rng(seed)
-        self.frames = []
+        self._tdict = {}
+        self._tpe = ThreadPoolExecutor()
 
     def generate_random_frame(self, height, width, frameinfo=None):
         frame = self.rng.integers(256, size=(height, width, 3), dtype=np.uint8)
@@ -24,21 +26,20 @@ class FrameGenerator:
     def generate_frames(self, output=None, frameinfo=None):
         for i in range(0, self.sequence):
             if frameinfo:
-                self.frames.append(self.generate_random_frame(self.height, self.width, {'frame': i, 'totalframes': self.sequence}))
+                frame = self.generate_random_frame(self.height, self.width, {'frame': i, 'totalframes': self.sequence})
             else:
-                self.frames.append(self.generate_random_frame(self.height, self.width))
+                frame = self.generate_random_frame(self.height, self.width)
             if output:
                 output_file = "{output_path}/{frame}.tiff".format(output_path=output, frame=i)
-                if cv2.haveImageWriter(output_file):
-                    cv2.imwrite(output_file, self.frames[i], None) 
-            print("Generated frame {i}".format(i=i))
+                self._tdict.update({self._tpe.submit(self._save_frame, i, frame, output_file): i})
 
-    def display_as_video(self):
-        for frame in self.frames:
-            cv2.namedWindow("Display", flags=cv2.WINDOW_GUI_NORMAL + cv2.WINDOW_AUTOSIZE)
-            cv2.imshow("Display", frame)
-            cv2.waitKey(16)
+        for f in as_completed(self._tdict):
+            if not f.result():
+                print("Error writing frame {i}".format(i=self._tdict[f]))
 
+    def _save_frame(self, i, frame, output):
+        if cv2.haveImageWriter(output):
+            return cv2.imwrite(output, frame, None)
 def main():
     parser = argparse.ArgumentParser(
         description="Generate frames of random noise and display or save to .TIFF",
