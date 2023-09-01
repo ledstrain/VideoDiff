@@ -147,7 +147,7 @@ class SimpleDither(VideoDiff):
                         if self.state == 'b':
                             color = common.zero_after_first_index(color)
                         elif self.state == 'g':
-                            color = common.zero_middle(color)
+                            color = common.zero_all_except_middle(color)
                         elif self.state == 'r':
                             color = common.zero_all_except_last(color)
                         image = common.abs_subtraction(color, prevframe)

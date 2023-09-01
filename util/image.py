@@ -130,8 +130,8 @@ class ImageDiff(WindowClass):
                     frame_a = common.zero_after_first_index(self.frame_a.copy())
                     frame_b = common.zero_after_first_index(self.frame_b.copy())
                 elif self.state == 'g':
-                    frame_a = common.zero_middle(self.frame_a.copy())
-                    frame_b = common.zero_middle(self.frame_b.copy())
+                    frame_a = common.zero_all_except_middle(self.frame_a.copy())
+                    frame_b = common.zero_all_except_middle(self.frame_b.copy())
                 elif self.state == 'r':
                     frame_a = common.zero_all_except_last(self.frame_a.copy())
                     frame_b = common.zero_all_except_last(self.frame_b.copy())
