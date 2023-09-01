@@ -7,10 +7,10 @@ def zero_after_first_index(fframe):
     return fframe
 
 @jax.jit
-def zero_middle(fframe):
-    result = np.zeros(fframe.shape, dtype=np.uint8)
-    result = result.at[:, :, 1].set(fframe[:, :, 1])
-    return result
+def zero_all_except_middle(fframe):
+    fframe = fframe.at[:, :, 0].set(0)
+    fframe = fframe.at[:, :, 2].set(0)
+    return fframe
 
 @jax.jit
 def zero_all_except_last(fframe):

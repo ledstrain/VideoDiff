@@ -104,12 +104,15 @@ class ImageDiff(WindowClass):
         if self.needRender:
             if self.state in self.colortoindex.keys():
                 if self.state == 'b':
-                    image = common.zero_after_first_index(self.frame_a)
+                    frame_a = common.zero_after_first_index(self.frame_a)
+                    frame_b = common.zero_after_first_index(self.frame_b)
                 elif self.state == 'g':
-                    image = common.zero_middle(self.frame_a)
+                    frame_a = common.zero_all_except_middle(self.frame_a)
+                    frame_b = common.zero_all_except_middle(self.frame_b)
                 elif self.state == 'r':
-                    image = common.zero_all_except_last(self.frame_a)
-                image = common.abs_subtraction(image, self.frame_b)
+                    frame_a = common.zero_all_except_last(self.frame_a)
+                    frame_b = common.zero_all_except_last(self.frame_b)
+                image = common.abs_subtraction(frame_a, frame_b)
             elif self.state == 'a':
                 image = common.abs_subtraction(self.frame_a, self.frame_b)
             elif self.state == 'm':
