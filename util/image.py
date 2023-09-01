@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+import util.common as common
 
 class WindowClass:
     def __init__(self, source):
@@ -126,7 +126,17 @@ class ImageDiff(WindowClass):
         self.__frame_input()
         if self.needRender:
             if self.state in self.colortoindex.keys():
-                image = self.__subtraction(self.frame_a, self.frame_b, self.colortoindex[self.state])
+                if self.state == 'b':
+                    frame_a = common.zero_after_first_index(self.frame_a.copy())
+                    frame_b = common.zero_after_first_index(self.frame_b.copy())
+                elif self.state == 'g':
+                    frame_a = common.zero_middle(self.frame_a.copy())
+                    frame_b = common.zero_middle(self.frame_b.copy())
+                elif self.state == 'r':
+                    frame_a = common.zero_all_except_last(self.frame_a.copy())
+                    frame_b = common.zero_all_except_last(self.frame_b.copy())
+                image = self.__abs_subtraction(frame_a, frame_b)
+
             elif self.state == 'a':
                 image = self.__abs_subtraction(self.frame_a, self.frame_b)
             elif self.state == 'm':

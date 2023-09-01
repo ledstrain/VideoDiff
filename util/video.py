@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+import util.common as common
 
 class VideoDiff:
     def __init__(self, source):
@@ -144,7 +144,13 @@ class SimpleDither(VideoDiff):
                 # Fill changed values to 255
                 if prevframe is not None:
                     if self.state in self.colortoindex.keys():
-                        image = self.__subtraction(color, prevframe, self.colortoindex, state=self.state)
+                        if self.state == 'b':
+                            color = common.zero_after_first_index(color)
+                        elif self.state == 'g':
+                            color = common.zero_middle(color)
+                        elif self.state == 'r':
+                            color = common.zero_all_except_last(color)
+                        image = common.abs_subtraction(color, prevframe)
                     elif self.state == 'm':
                         image = self.__mask(color, prevframe, self.fill_value)
                     elif self.state == 'n':
