@@ -125,34 +125,33 @@ class SimpleDither(VideoDiff):
             if self.framebyframe and not self.needRender:
                 continue
 
-            # Capture frame-by-frame
+            # Save the previous frame
+            if prevframe is not None:
+                prevframe = frame
+
             ret, frame = capture_source.read()
             if ret is True:
-                # Save the previous frame
-                if prevframe is not None:
-                    prevframe = color
-                color = frame
-
                 # First run, save color as prevframe and skip
                 # create __mask of image of all changed values
                 # Fill changed values to 255
                 if prevframe is not None:
                     if self.state in self.colortoindex.keys():
+                        color = common.abs_subtraction(frame, prevframe)
                         if self.state == 'b':
                             color = common.zero_after_first_index(color)
                         elif self.state == 'g':
                             color = common.zero_all_except_middle(color)
                         elif self.state == 'r':
                             color = common.zero_all_except_last(color)
-                        image = common.abs_subtraction(color, prevframe)
+                        image = color
                     elif self.state == 'a':
-                        image = common.abs_subtraction(color, prevframe)
+                        image = common.abs_subtraction(frame, prevframe)
                     elif self.state == 'm':
-                        image = common.mask(color, prevframe, self.fill)
+                        image = common.mask(frame, prevframe, self.fill)
                     elif self.state == 'n':
                         image = color
                 else:
-                    prevframe = color
+                    prevframe = frame
                     continue
                 if self.framebyframe:
                     self.needRender = False
