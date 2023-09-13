@@ -19,14 +19,14 @@ class FrameGenerator:
             frametext = "{frame}/{totalframes}".format(frame=frameinfo['frame'], totalframes=frameinfo['totalframes'])
             fontScale = min(width, height) * 0.0017
             yPos = int(height / 20)
-            cv2.putText(frame, frametext, (0, yPos), cv2.FONT_HERSHEY_SIMPLEX, fontScale, [255, 255, 255], 3, cv2.FILLED);
+            cv2.putText(frame, frametext, (0, yPos), cv2.FONT_HERSHEY_SIMPLEX, fontScale, [255, 255, 255], 3, cv2.FILLED)
 
         return frame
 
     def generate_frames(self, output=None, frameinfo=None):
         for i in range(0, self.sequence):
             if frameinfo:
-                frame = self.generate_random_frame(self.height, self.width, {'frame': i, 'totalframes': self.sequence})
+                frame = self.generate_random_frame(self.height, self.width, {'frame': i + 1, 'totalframes': self.sequence})
             else:
                 frame = self.generate_random_frame(self.height, self.width)
             if output:
