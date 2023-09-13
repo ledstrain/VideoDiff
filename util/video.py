@@ -149,7 +149,7 @@ class SimpleDither(VideoDiff):
                     elif self.state == 'm':
                         image = common.mask(frame, prevframe, self.fill)
                     elif self.state == 'n':
-                        image = color
+                        image = frame
                 else:
                     prevframe = frame
                     continue
