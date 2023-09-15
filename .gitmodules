@@ -1,0 +1,3 @@
+[submodule "testpatterns"]
+	path = testpatterns
+	url = ../VideoDiff-testpatterns
