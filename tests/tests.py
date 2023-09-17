@@ -1,5 +1,5 @@
 import pytest
-import numpy as np
+from jax import numpy as np
 import cv2
 from util.video import SimpleDither
 
@@ -38,4 +38,16 @@ class TestVideoDiff:
         for frame in video._render(video.cap):
             videoframes.append(frame)
  
+        assert np.array_equal(tpframes, videoframes)
+
+    def test_absubtraction(self):
+        tpframes = []
+        videoframes = []
+        for i in range(2, 6):
+            tpframes.append(cv2.imread("testpatterns/a/{i}.tiff".format(i=i)))
+        
+        video = SimpleDither('testpatterns/testpattern.mkv', fill_value=255, state='a', framebyframe=False)
+        for frame in video._render(video.cap):
+            videoframes.append(frame)
+        
         assert np.array_equal(tpframes, videoframes)
