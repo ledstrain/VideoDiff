@@ -11,7 +11,10 @@ class VideoDiff:
         self.windowname = None
         self._tdict = {}
         self._tpe = ThreadPoolExecutor()
-
+        
+        if not self.cap.isOpened():
+            raise cv2.error("Unable to open capture source: {source}".format(source=source))
+            exit(1)
 
     def __del__(self):
         # When everything done, release the capture

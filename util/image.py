@@ -9,6 +9,14 @@ class WindowClass:
         self.windowname = None
         self.frame_a = cv2.imread(source[0])
         self.frame_b = cv2.imread(source[1])
+        
+        if self.frame_a is None:
+            raise cv2.error("Unable to open file {file}".format(file=source[0]))
+            exit(1)
+
+        if self.frame_b is None:
+            raise cv2.error("Unable to open file {file}".format(file=source[1]))
+            exit(1)
 
     def __del__(self):
         # When everything done, release the capture
