@@ -5,4 +5,4 @@
 numpy == 1.22.0
 
 # util/video.py: 1
-opencv_python == 4.2.0.32
+opencv_python == 4.8.1.78
